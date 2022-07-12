@@ -5,6 +5,9 @@ export const resolvers = {
     },
     getSong: async (_, { id }, { dataSources: { songs } }) => {
       return songs.getSong(id);
+    },
+    getFilteredSongs: async (_, _args, { dataSources: { songs } }) => {
+      return songs.getFilteredSongs(_args);
     }
   },
   Mutation: {

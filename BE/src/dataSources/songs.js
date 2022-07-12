@@ -37,7 +37,6 @@ export default class Songs extends MongoDataSource {
     return false;
   }
 
-
   async deleteSong({ id }) {
     const isValidID = mongoose.Types.ObjectId.isValid(id);
     
@@ -47,5 +46,22 @@ export default class Songs extends MongoDataSource {
     }
 
     return false;
+  }
+
+  async getFilteredSongs({ artists, genres, tags }) {
+    let filterQuery = {};
+    
+    if(artists.length > 0)
+      filterQuery.artist = { $in: artists };
+
+    if(genres.length > 0)
+      filterQuery.genre = { $in: genres };
+
+    if(tags.length > 0)
+      filterQuery.tag = { $in: tags };
+
+    const result = this.model.find(filterQuery);
+
+    if(result) return result;
   }
 }
