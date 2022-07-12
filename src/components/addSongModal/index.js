@@ -58,8 +58,8 @@ const AddSongModal = ({ open, onClose }) => {
   return (
     <div>
       <Modal
-          open={open}
-          onClose={onClose}
+        open={open}
+        onClose={onClose}
       >
         <Box sx={style} component="form" onSubmit={handleSubmit}>
           <TextField
