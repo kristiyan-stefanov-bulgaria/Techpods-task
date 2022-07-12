@@ -1,6 +1,12 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import TagList from '../tagList'
+import Button from '@mui/material/Button';
+import { useState, useEffect } from 'react';
+import { MUTATION_UPDATE_SONG } from '../../operations/mutation/updateSong';
+import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
+import { useMutation, useApolloClient, gql } from '@apollo/client';
 
 const style = {
   position: 'absolute',
@@ -14,24 +20,84 @@ const style = {
   p: 4,
 };
 
+
 const EditModal = ({ open, onClose, songData }) => {
-  console.log(songData);
-  if(songData) {
+  const [ state, setState ] = useState({});
+
+  const [updateSongMutation, {data, loading, error}] = useMutation(MUTATION_UPDATE_SONG, {
+    refetchQueries: [{
+        query:  QUERY_GET_ALL_SONGS
+      }],
+    variables: { 
+      updateSongId: state.songID,
+      name: state.name,
+      artist: state.artist,
+      genre: state.genre,
+      tag: state.tag
+    },
+  });
+
+  const handleInputChange = (e) => {
+    setState({ ...state, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateSongMutation();
+  };
+
+  useEffect(() => {
+    if (songData) {
+      setState(songData);
+    }
+  }, [songData]);
+
+  if (Object.keys(state).length) {
     return (
       <div>
         <Modal
           open={open}
           onClose={onClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              {songData.artist}
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              
-            </Typography>
+          <Box sx={style} component="form" onSubmit={handleSubmit}>
+            <TextField
+              required
+              id="artist"
+              label="Artist name"
+              value={state.artist}
+              sx={{ mb: 2 }}
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              required
+              id="name"
+              value={state.name}
+              label="Song title"
+              fullWidth
+              sx={{ mb: 2 }}
+              onChange={handleInputChange}
+            />
+            <TextField
+              required
+              id="genre"
+              value={state.genre}
+              label="Genre"
+              fullWidth
+              sx={{ mb: 2 }}
+              onChange={handleInputChange}
+            />
+            { state.tag && state.tag.length > 0 &&
+              <TagList tags={state.tag} /> 
+            }
+            <Button 
+              variant="outlined"
+              value="save"
+              sx={{ mt: 2 }}
+              type="submit"
+              color="success">
+                Save
+            </Button>
           </Box>
         </Modal>
       </div>
