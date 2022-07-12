@@ -4,8 +4,9 @@ import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube'
+import EditModal from '../editModal';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -48,12 +49,18 @@ const reducer = (state, action) => {
       }
 
       return [...state];
+
+    default:
+      return [...state];
   }
 }
 
 const SongsList = () => {
   const { loading, data, error } = useQuery(QUERY_GET_ALL_SONGS)
-  const [state, dispatch] = useReducer(reducer, []);
+  const [ state, dispatch ] = useReducer(reducer, []);
+  const [ modalData, setOpen ] = useState({ open: false, modalData: {} });
+  const handleModalOpen = (songData) => setOpen({ open: true, modalData: songData });
+  const handleModalClose = () => setOpen({ open: false, modalData: {}});
 
   useEffect(() => {
     if (data) {
@@ -64,19 +71,19 @@ const SongsList = () => {
   if (loading) return <h1>Loading....</h1>;
   if (error) return <h1>Error</h1>;
 
-  const clickHandler = (e) => {
+  const sortClickHandler = (e) => {
     e.preventDefault();
     if (e.target.value === 'up')
       return dispatch({ type: 'MOVE_UP', sortIndex: e.target.dataset['sortIndex'] });
 
-      dispatch({ type: 'MOVE_DOWN', sortIndex: e.target.dataset['sortIndex'] });
+    dispatch({ type: 'MOVE_DOWN', sortIndex: e.target.dataset['sortIndex'] });
   };
 
   state.filtered = [];
 
   if (state.length) {
     return (
-      <Box sx={{ width: "100%", maxWidth: 360 }}>
+      <Box sx={{ width: "100%" }}>
         <List>
           {state.map(({ _id, artist, genre, name, tag, sortIndex }) => {
             return (
@@ -89,17 +96,22 @@ const SongsList = () => {
                   name={name}
                   tag={tag}
                   sortIndex={sortIndex}
-                  onSortButtonClickHandler={clickHandler}
+                  onSortButtonClickHandler={sortClickHandler}
+                  editClickHandler={handleModalOpen}
                 />
-                <ReactPlayer url='https://www.youtube.com/watch?v=F4hQ4J4BFOM' controls={true} />
+                {/* <ReactPlayer url='https://www.youtube.com/watch?v=F4hQ4J4BFOM' controls={true} /> */}
               </ListItem>
             );
           })}
         </List>
+        <EditModal
+          open={modalData.open}
+          songData={modalData.modalData}
+          onClose={handleModalClose}
+        />
       </Box>
     );
   }
-
 };
 
 export default SongsList;
