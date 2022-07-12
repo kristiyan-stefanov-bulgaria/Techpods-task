@@ -1,11 +1,11 @@
-import SongsList from '../songsList';
-import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
+import { useState } from 'react';
 import darkTheme from '../theme';
-import FiltersMenu from '../filtersMenu';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import AddSongModal from '../addSongModal';
-import { useState } from 'react';
+import FiltersMenu from '../filtersMenu'
+import SongsList from '../songsList';
 
 const App = () => {
   const [ state, setState ] = useState(false);
@@ -13,11 +13,19 @@ const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="App" >
-        <Grid container spacing={2} sx={{ marginTop: 0 }}>
-          <Grid item xs={2} sx={{ bgcolor: "background.default", margin: 0, height: "100vh" }}>
+        <Grid container sx={{ marginTop: 0 }}>
+          <Grid item xs={12} sm={4} xl={2} sx={{ 
+            bgcolor: "background.default",
+            paddingTop: '0 !important' 
+          }}>
             <FiltersMenu />
           </Grid>
-          <Grid item xs={10} sx={{ bgcolor: "background.default", margin: 0, height: "100vh" }}>
+          <Grid item xs={12} sm={8} xl={10} sx={{
+            backgroundColor: "background.default",
+            height: "100vh",
+            pt: { xs:'70px', sm:'30px' },
+            pl: { xs: '20px', sm: '40px' }
+          }}>
             <SongsList />
             <Button variant="text" onClick={() => setState(true)}>Add song</Button>
             <AddSongModal open={state} onClose={() => setState(false)} />
