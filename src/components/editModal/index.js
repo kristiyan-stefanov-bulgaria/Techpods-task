@@ -20,7 +20,6 @@ const style = {
   p: 4,
 };
 
-
 const EditModal = ({ open, onClose, songData }) => {
   const [ state, setState ] = useState({});
 
@@ -44,6 +43,7 @@ const EditModal = ({ open, onClose, songData }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateSongMutation();
+    onClose();
   };
 
   useEffect(() => {
@@ -68,6 +68,7 @@ const EditModal = ({ open, onClose, songData }) => {
               sx={{ mb: 2 }}
               fullWidth
               onChange={handleInputChange}
+              inputProps={{ pattern: '(?!\s*$).{2,}' }}
             />
             <TextField
               required
@@ -77,6 +78,7 @@ const EditModal = ({ open, onClose, songData }) => {
               fullWidth
               sx={{ mb: 2 }}
               onChange={handleInputChange}
+              inputProps={{ pattern: '(?!\s*$).{2,}' }}
             />
             <TextField
               required
@@ -86,6 +88,7 @@ const EditModal = ({ open, onClose, songData }) => {
               fullWidth
               sx={{ mb: 2 }}
               onChange={handleInputChange}
+              inputProps={{ pattern: '(?!\s*$).{2,}' }}
             />
             { state.tag && state.tag.length > 0 &&
               <TagList tags={state.tag} /> 
