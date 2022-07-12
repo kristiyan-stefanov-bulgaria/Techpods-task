@@ -1,14 +1,26 @@
 import { ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import darkTheme from '../theme';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import AddSongModal from '../addSongModal';
 import FiltersMenu from '../filtersMenu'
 import SongsList from '../songsList';
+import { useDispatch } from 'react-redux'
+import { populate } from '../../redux/slices/songsSlice';
+import { useQuery } from '@apollo/client';
+import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
 
 const App = () => {
   const [ state, setState ] = useState(false);
+  const { loading, data, error } = useQuery(QUERY_GET_ALL_SONGS);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if (data) {
+      dispatch(populate(data));
+    }
+  }, [data]);
 
   return (
     <ThemeProvider theme={darkTheme}>
