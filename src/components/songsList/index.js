@@ -1,12 +1,16 @@
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import SongEntry from '../songEntry';
+import { useReducer, useEffect, useState } from 'react';
 import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
+import { MUTATION_DELETE_SONG } from '../../operations/mutation/deleteSong';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useReducer, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube'
 import EditModal from '../editModal';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -59,8 +63,15 @@ const SongsList = () => {
   const { loading, data, error } = useQuery(QUERY_GET_ALL_SONGS)
   const [ state, dispatch ] = useReducer(reducer, []);
   const [ modalData, setOpen ] = useState({ open: false, modalData: {} });
+  
   const handleModalOpen = (songData) => setOpen({ open: true, modalData: songData });
   const handleModalClose = () => setOpen({ open: false, modalData: {}});
+
+  const [deleteSongMutation, { deleteResult, deleteLoading, deleteError }] = useMutation(MUTATION_DELETE_SONG, {
+    refetchQueries: [{
+        query:  QUERY_GET_ALL_SONGS
+      }],
+  });
 
   useEffect(() => {
     if (data) {
@@ -68,8 +79,8 @@ const SongsList = () => {
     }
   }, [data])
   
-  if (loading) return <h1>Loading....</h1>;
-  if (error) return <h1>Error</h1>;
+  if (loading || deleteLoading) return <h1>Loading....</h1>;
+  if (error || deleteError) return <h1>Error</h1>;
 
   const sortClickHandler = (e) => {
     e.preventDefault();
@@ -79,39 +90,56 @@ const SongsList = () => {
     dispatch({ type: 'MOVE_DOWN', sortIndex: e.target.dataset['sortIndex'] });
   };
 
-  state.filtered = [];
+  const handleDeleteClick = (e) => {
+    e.preventDefault();
+    deleteSongMutation({
+      variables: { 
+        id: e.target.value,
+      }
+    });
 
-  if (state.length) {
-    return (
-      <Box sx={{ width: "100%" }}>
-        <List>
-          {state.map(({ _id, artist, genre, name, tag, sortIndex }) => {
-            return (
-              <ListItem disablePadding key={_id}>
-                <SongEntry
-                  key={_id}
-                  songID={_id}
-                  artist={artist}
-                  genre={genre}
-                  name={name}
-                  tag={tag}
-                  sortIndex={sortIndex}
-                  onSortButtonClickHandler={sortClickHandler}
-                  editClickHandler={handleModalOpen}
-                />
-                {/* <ReactPlayer url='https://www.youtube.com/watch?v=F4hQ4J4BFOM' controls={true} /> */}
-              </ListItem>
-            );
-          })}
-        </List>
-        <EditModal
-          open={modalData.open}
-          songData={modalData.modalData}
-          onClose={handleModalClose}
-        />
-      </Box>
-    );
+    console.log(deleteResult);
   }
+
+  state.filtered = [];
+  
+  return (
+    <Box sx={{ width: "100%" }}>
+      <List>
+        {state.length === 0 &&
+          <Alert severity="error">
+            <AlertTitle>No songs</AlertTitle>
+            You currently have no songs in your playlist!
+          </Alert>
+        }
+
+        {state.map(({ _id, artist, genre, name, tag, sortIndex }) => {
+          return (
+            <ListItem disablePadding key={_id}>
+              <SongEntry
+                key={_id}
+                songID={_id}
+                artist={artist}
+                genre={genre}
+                name={name}
+                tag={tag}
+                sortIndex={sortIndex}
+                onSortButtonClickHandler={sortClickHandler}
+                editClickHandler={handleModalOpen}
+              />
+              {/* <ReactPlayer url='https://www.youtube.com/watch?v=F4hQ4J4BFOM' controls={true} /> */}
+              <Button variant="text" value={_id} onClick={handleDeleteClick}>Delete</Button>
+            </ListItem>
+          );
+        })}
+      </List>
+      <EditModal
+        open={modalData.open}
+        songData={modalData.modalData}
+        onClose={handleModalClose}
+      />
+    </Box>
+  );
 };
 
 export default SongsList;
