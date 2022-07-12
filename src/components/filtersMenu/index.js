@@ -10,109 +10,89 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
+import { useDispatch  } from 'react-redux';
+import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
+import { useQuery } from '@apollo/client';
+import { setFilter } from '../../redux/slices/filterSlice';
 
 const FiltersMenu = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [ mobileOpen, setMobileOpen ] = useState(false);
+  const dispatch = useDispatch();
+
+  const { data } = useQuery(QUERY_GET_ALL_SONGS);
+  let filters = [];
+  
+  if(data) {
+    filters = [
+      { 'artist': data.getSongs.map(song => song.artist).filter(artist => artist) },
+      { 'genre': data.getSongs.map(song => song.genre).filter(genre => genre) },
+      { 'tag': data.getSongs.map(song => song.tag).filter(tag => tag.length > 0) },
+    ];
+
+    let tempTags = [];
+    filters[2].tag.map((tags) => tempTags = tempTags.concat(tags));
+
+    //Hack to filter unique values
+    filters[0].artist = [... new Set(filters[0].artist)];
+    filters[1].genre = [... new Set(filters[1].genre)];
+    filters[2].tag = [... new Set(tempTags)];
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  //todo: must get available artists from songs so you can filter :)\
+  const handleCheckBoxChange = (e) => {
+    dispatch(setFilter({ 
+      active: e.target.checked,
+      filter: e.target.value,
+      filterCategory: e.target.dataset['filterCategory']
+     }));
+  };
+
   const drawer = (
-    <>
-      <Box sx={{ m: "20px 20px" }}>
-        <Typography variant="h4">Artist</Typography>
-        <Divider />
-        <FormGroup
-          row
-          sx={{
-            overflow: "auto",
-            height: "170px",
-            mt: "10px",
-            "&::-webkit-scrollbar": { "backgroundColor": "transparent" },
-            "::-webkit-scrollbar-thumb": {
-              bgcolor: "#494949",
-              borderRadius: "10px",
-            },
-          }}
-        >
-          {["Azis", "Preslava", "Eminem", "AC DC", "Red Hot chili peppers"].map(
-            (text) => (
-              <FormControlLabel
+    <Box sx={{ m: "20px" }}>
+      {filters.map((filterSegment) => (
+        <div key={Object.keys(filterSegment)[0]}>
+          <Typography variant="h4">{Object.keys(filterSegment)[0].toUpperCase()}</Typography>
+          <Divider />
+          <FormGroup
+            row
+            sx={{
+              overflow: "auto",
+              maxHeight: "170px",
+              mt: "10px",
+              "&::-webkit-scrollbar": { "backgroundColor": "transparent" },
+              "::-webkit-scrollbar-thumb": {
+                borderRadius: "10px",
+                backgroundColor: '#494949'
+              },
+            }}
+          >
+            {filterSegment[Object.keys(filterSegment)[0]].length === 0 && 
+              <Typography variant="h6" color="error.light" noWrap component="div">
+                No entries
+              </Typography>
+            }
+            {filterSegment[Object.keys(filterSegment)].map(
+              (text) => (
+                <FormControlLabel
                 key={text}
                 sx={{ width: "100%" }}
-                control={<Checkbox />}
+                control={<Checkbox onClick={handleCheckBoxChange} inputProps={{ 'data-filter-category': Object.keys(filterSegment)[0] }} value={text}/>}
                 label={text}
-              />
-            )
-          )}
-        </FormGroup>
-      </Box>
-      {/*  todo:must get available Genre from songs so you can filter :)  */}
-      <Box sx={{ m: "20px 20px" }}>
-        <Typography variant="h4">Genre</Typography>
-        <Divider />
-        <FormGroup
-          row
-          sx={{
-            overflow: "auto",
-            height: "170px",
-            mt: "10px",
-            "&::-webkit-scrollbar": { "backgroundColor": "transparent" },
-            "::-webkit-scrollbar-thumb": {
-              bgcolor: "#494949",
-              borderRadius: "10px",
-            },
-          }}
-        >
-          {["Rock", "POP", "Azis", "Kpop", "EDM"].map((text) => (
-            <FormControlLabel
-              key={text}
-              sx={{ width: "100%" }}
-              control={<Checkbox />}
-              label={text}
-            />
-          ))}
-        </FormGroup>
-      </Box>
-      {/* todo:must get available Tags from songs so you can filter :)  */}
-      <Box sx={{ m: "20px 20px" }}>
-        <Typography variant="h4">Tags</Typography>
-        <Divider />
-        <FormGroup
-          row
-          sx={{
-            overflow: "auto",
-            height: "170px",
-            mt: "10px",
-            "&::-webkit-scrollbar": { "backgroundColor": "transparent" },
-            "::-webkit-scrollbar-thumb": {
-              bgcolor: "#494949",
-              borderRadius: "10px",
-            },
-          }}
-        >
-          {["Qka pesen", "MN PROSTI", "UMIRAM"].map((text) => (
-            <FormControlLabel
-              key={text}
-              sx={{ width: "100%" }}
-              control={<Checkbox />}
-              label={text}
-            />
-          ))}
-        </FormGroup>
-      </Box>
-    </>
+                />
+              )
+            )}
+          </FormGroup>
+      </div>
+    ))}
+    </Box>
   );
 
   return (
     <>
-      <AppBar
-        sx={{
-          display: { xs: "block", sm: "none" },
-        }}
-      >
+      <AppBar sx={{ display: { xs: "block", sm: "none" } }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -138,7 +118,9 @@ const FiltersMenu = () => {
         }}
         sx={{
           display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: "70%" },
+          "& .MuiDrawer-paper": { 
+            boxSizing: "border-box",
+            width: "70%" },
         }}
       >
       {drawer}
@@ -150,6 +132,7 @@ const FiltersMenu = () => {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             position: "inherit",
+            backgroundColor: '#272727'
           },
           height: "100%",
         }}

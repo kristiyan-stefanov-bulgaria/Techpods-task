@@ -29,7 +29,7 @@ const AddSongModal = ({ open, onClose }) => {
   }
   const [ state, setState ] = useState(initialState);
 
-  const [addSongMutation, {data, loading, error}] = useMutation(MUTATION_ADD_SONG, {
+  const [addSongMutation, { loading, error }] = useMutation(MUTATION_ADD_SONG, {
     refetchQueries: [{
         query:  QUERY_GET_ALL_SONGS
       }],

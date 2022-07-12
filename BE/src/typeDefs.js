@@ -12,6 +12,7 @@ export const typeDefs = gql`
   type Query {
     getSongs: [Song!]!,
     getSong(id: ID!): Song
+    getFilteredSongs(artists: [String], genres: [String], tags: [String]): [Song!]
   }
 
   type Mutation {

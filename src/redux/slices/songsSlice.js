@@ -5,7 +5,10 @@ export const songsSlice = createSlice({
   initialState: [],
   reducers: {
     populate: (state, data) => {
-      return [...data.payload.getSongs];
+      if(data.payload.getSongs)
+        return [...data.payload.getSongs];
+      
+      return [...data.payload.getFilteredSongs];
     },
 
     moveUp: (state, data) => {
@@ -39,12 +42,8 @@ export const songsSlice = createSlice({
 
       return songsList;
     },
-
-    filterSongs: (state, data) => {
-      //TODO filter songs
-    }
   },
 });
 
-export const { populate, moveUp, moveDown, filterSongs } = songsSlice.actions;
+export const { populate, moveUp, moveDown } = songsSlice.actions;
 export default songsSlice.reducer;
