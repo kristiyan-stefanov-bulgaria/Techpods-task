@@ -3,15 +3,14 @@ import SongEntry from '../songEntry';
 import { useState } from 'react';
 import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
 import { MUTATION_DELETE_SONG } from '../../operations/mutation/deleteSong';
-import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ReactPlayer from 'react-player/youtube'
 import EditModal from '../editModal';
-import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { useSelector } from 'react-redux';
+import Grid from '@mui/material/Grid';
+import AlignButtons from '../alignButtons';
 
 const SongsList = () => {
   const [ modalData, setOpen ] = useState({ open: false, modalData: {} });
@@ -39,34 +38,39 @@ const SongsList = () => {
 
     console.log(deleteResult);
   }
-
-  // state.filtered = [];
   
   return (
-    <Box sx={{ width: "100%" }}>
+    <>
       <List>
-        {songsList.length === 0 &&
-          <Alert severity="error">
-            <AlertTitle>No songs</AlertTitle>
-            You currently have no songs in your playlist!
-          </Alert>
-        }
+        <Grid item xs={12}>
+          {songsList.length === 0 &&
+            <Alert severity="error">
+              <AlertTitle>No songs</AlertTitle>
+              You currently have no songs in your playlist - <strong>add some!</strong>
+            </Alert>
+          }
+        </Grid>
         {songsList.map(({ _id, artist, genre, name, tag }, index) => {
           return (
-            <ListItem disablePadding key={_id}>
-              <SongEntry
-                key={_id}
-                songID={_id}
-                artist={artist}
-                genre={genre}
-                name={name}
-                tag={tag}
-                songIndex={index}
-                editClickHandler={handleModalOpen}
-              />
-              {/* <ReactPlayer url='https://www.youtube.com/watch?v=F4hQ4J4BFOM' controls={true} /> */}
-              <Button variant="text" value={_id} onClick={handleDeleteClick}>Delete</Button>
-            </ListItem>
+            <Grid container item xs={12} py={2} key={_id}>
+              <ListItem disablePadding>
+                <Grid item xs={9} sm={6} md={4} xl={2} >
+                  <SongEntry
+                    key={_id}
+                    songID={_id}
+                    artist={artist}
+                    genre={genre}
+                    name={name}
+                    tag={tag}
+                    editClickHandler={handleModalOpen}
+                    handleDeleteClick={handleDeleteClick}
+                  />
+                </Grid>
+                <Grid container direction="column" item xs={3} sm={1} mb="auto" >
+                  <AlignButtons songIndex={index} numOfSongs={songsList.length} />
+                </Grid>
+              </ListItem>
+            </Grid>
           );
         })}
       </List>
@@ -75,7 +79,7 @@ const SongsList = () => {
         songData={modalData.modalData}
         onClose={handleModalClose}
       />
-    </Box>
+    </>
   );
 };
 
