@@ -73,9 +73,9 @@ npm run start
     - [x] Implement Filter by artist / genre / tags (can be a mix of them)
     - [ ] Pagination
 - [x] Design
- - [x] Implement mobile design
- - [x] Implement tablet design
- - [x] Implement desktop design
+    - [x] Implement mobile design
+    - [x] Implement tablet design
+    - [x] Implement desktop design
  
  
 ## Side notes
