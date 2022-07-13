@@ -1,70 +1,92 @@
-# Getting Started with Create React App
+## About The Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple project to show my knowledge and adaptability to new technologies and frameworks.
+This project is a simple CRUD-like that uses Node.js Apollo server along with GraphQL and MongoDB to serve as an API to fetch/insert/update/delete songs list. Front end is a React application that uses Apollo client that is being used to fetch and manage the remote data with GraphQL from our back end.
 
-## Available Scripts
+### BE Built With
 
-In the project directory, you can run:
+- Apollo Server 
+- GraphQL
+- MongoDB
 
-### `npm start`
+### FE Built With
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Apollo Client
+- React
+- React-redux
+- GraphQL
+- MUI
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repo
+   ```sh
+   git clone https://github.com/kristiyan-stefanov-bulgaria/Techpods-task.git
+   ```
+3. Install NPM packages inside BE folder
+   ```sh
+   cd BE
+   npm install
+   ```
+3. Run BE server
+   ```sh
+   npm run start:dev
+   ```
+.env is preconfigured and provided in the repo with demo account.
 
-### `npm run build`
+4. Install NPM packaged in the root directory
+```sh
+cd ../
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+5. Run the app
+```sh
+npm run start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Roadmap
 
-### `npm run eject`
+- [x] Back End
+    - [x] Get Apollo Server up and running
+    - [x] Connect MongoDB as our DB
+    - [x] Create GraphQL queries and mutations
+        - [x] Add new song
+        - [x] Update an existing song
+        - [x] Delete a song
+        - [x] Get all songs
+        - [x] Get a single song by ID
+        - [x] Get a filtered list by different and mixed criteria
+- [ ] Front End
+    - [x] Create a create-react-app up and running
+    - [x] Integrate Apollo Client
+    - [x] Integrate React redux and create store and reducers
+    - [x] Implement the queries and mutations to do CRUD operations
+    - [x] Fetch all songs and display them
+    - [x] Implement edit functionality
+    - [x] Implement sorting up and down functionality
+    - [x] Implement delete functionality
+    - [x] Implement Filter by artist / genre / tags (can be a mix of them)
+    - [ ] Pagination
+- [x] Design
+ - [x] Implement mobile design
+ - [x] Implement tablet design
+ - [x] Implement desktop design
+ 
+ 
+## Side notes
+ This was a project that was certainly not as easy as I initially thought and I spent quite some time trying to implement stuff I'm not even sure would've been the correct approach in the first place. One such example is the Ordering and Filtering implementation. Currently it's done using Redux state containers, and constant refetching of both all songs and if there are any active filters - filtered ones. I tried avoiding that by using directly the internal cache of Apollo Client, so that we don't have to refetch the data, but after many hours and varying success I dropped that idea.
+ 
+I don't know if my code is production ready, since I've never seen such production-ready project that I could compare to. I also used no boilerplates other than create-react-app so I could understand how different technologies are implemented.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+A few improvements I would do is port the project to Next.js and Typescript.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+There are certain parts of the code that NEEDS to be refactored for sure. I've made some cuts due to the deadline and partly because of exhaustion from learning all those new and exciting technologies.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+I would appreciate some feedback on what I should improve on.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="right">(<a href="#top">back to top</a>)</p>
