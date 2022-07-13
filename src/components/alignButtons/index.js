@@ -1,9 +1,8 @@
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
 import { moveUp, moveDown } from '../../redux/slices/songsSlice';
 
-const AlignButtons = ({ songIndex }) => {
+const AlignButtons = ({ songIndex, numOfSongs }) => {
   const dispatch = useDispatch();
 
   const sortClickHandler = (e) => {
@@ -15,10 +14,15 @@ const AlignButtons = ({ songIndex }) => {
   };
   
   return (
-    <Stack spacing={2} direction="row">
-      <Button variant="text" value="up" data-song-index={songIndex} onClick={sortClickHandler}>Up</Button>
-      <Button variant="text" value="down" data-song-index={songIndex} onClick={sortClickHandler}>Down</Button>
-    </Stack>
+    <>
+      {songIndex > 0 && 
+        <Button variant="text" value="up" data-song-index={songIndex} onClick={sortClickHandler}>Up</Button>
+      }
+
+      {(songIndex < numOfSongs - 1) &&
+        <Button variant="text" value="down" data-song-index={songIndex} onClick={sortClickHandler}>Down</Button>
+      }
+    </>
   );
 };
 

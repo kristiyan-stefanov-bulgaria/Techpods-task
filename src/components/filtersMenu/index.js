@@ -10,13 +10,16 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 import { useDispatch  } from 'react-redux';
 import { QUERY_GET_ALL_SONGS } from '../../operations/queries/getAllSongs';
 import { useQuery } from '@apollo/client';
 import { setFilter } from '../../redux/slices/filterSlice';
+import AddSongModal from '../addSongModal';
 
 const FiltersMenu = () => {
   const [ mobileOpen, setMobileOpen ] = useState(false);
+  const [ state, setState ] = useState(false);
   const dispatch = useDispatch();
 
   const { data } = useQuery(QUERY_GET_ALL_SONGS);
@@ -33,9 +36,9 @@ const FiltersMenu = () => {
     filters[2].tag.map((tags) => tempTags = tempTags.concat(tags));
 
     //Hack to filter unique values
-    filters[0].artist = [... new Set(filters[0].artist)];
-    filters[1].genre = [... new Set(filters[1].genre)];
-    filters[2].tag = [... new Set(tempTags)];
+    filters[0].artist = [...new Set(filters[0].artist)];
+    filters[1].genre = [...new Set(filters[1].genre)];
+    filters[2].tag = [...new Set(tempTags)];
   }
 
   const handleDrawerToggle = () => {
@@ -124,6 +127,7 @@ const FiltersMenu = () => {
         }}
       >
       {drawer}
+      <Button variant="outlined" sx={{ alignSelf: 'start', ml: '16px' }} onClick={() => setState(true)}>Add song</Button>
       </Drawer>
       <Drawer
         variant="permanent"
@@ -139,7 +143,9 @@ const FiltersMenu = () => {
         open={mobileOpen}
       >
       {drawer}
+      <Button variant="outlined" sx={{ alignSelf: 'start', ml: '16px' }} onClick={() => setState(true)}>Add song</Button>
       </Drawer>
+      <AddSongModal open={state} onClose={() => setState(false)} />
     </>
   );
 };
